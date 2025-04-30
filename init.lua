@@ -4,7 +4,7 @@ local handler = {}
 local sound = {}
 local chats = {}
 
-minetest.register_node("mysoundblocks:block", {
+core.register_node("mysoundblocks:block", {
 	description = "Sound Block",
 	drawtype = "normal",
 	tiles = {"mysoundblocks_block.png"},
@@ -15,15 +15,15 @@ minetest.register_node("mysoundblocks:block", {
 	on_place = function(itemstack, placer, pointed_thing)
 	local pos = pointed_thing.above
 
-		if minetest.get_player_privs(placer:get_player_name()).mysoundblocks ~= true then
+		if core.get_player_privs(placer:get_player_name()).mysoundblocks ~= true then
 
-			minetest.chat_send_player(placer:get_player_name(),
+			core.chat_send_player(placer:get_player_name(),
 				"You need the mysoundblocks priv")
 			return
 		end
 
-		if minetest.get_player_privs(placer:get_player_name()).mysoundblocks == true then
-			minetest.set_node(pos,{name = "mysoundblocks:block"})
+		if core.get_player_privs(placer:get_player_name()).mysoundblocks == true then
+			core.set_node(pos,{name = "mysoundblocks:block"})
 		end
 
 	end,
@@ -31,24 +31,24 @@ minetest.register_node("mysoundblocks:block", {
 
 	on_dig = function(pos, node, player)
 
-		if minetest.get_player_privs(player:get_player_name()).mysoundblocks ~= true then
+		if core.get_player_privs(player:get_player_name()).mysoundblocks ~= true then
 
-			minetest.chat_send_player(player:get_player_name(),
+			core.chat_send_player(player:get_player_name(),
 				"You need the mysoundblocks priv")
 			return
 		end
 
-		if minetest.get_player_privs(player:get_player_name()).mysoundblocks == true then
+		if core.get_player_privs(player:get_player_name()).mysoundblocks == true then
 
-			minetest.remove_node(pos)
+			core.remove_node(pos)
 		end
 
 	end,
 
 	on_rightclick = function(pos, node, player, itemstack, pointed_thing)
 
-		local node = minetest.get_node(pos)
-		local meta = minetest.get_meta(pos)
+		local node = core.get_node(pos)
+		local meta = core.get_meta(pos)
 		local aa = meta:get_string("a")
 		local bb = tonumber(meta:get_string("b")) or 5
 		local cc = tonumber(meta:get_string("c")) or 3
@@ -56,7 +56,7 @@ minetest.register_node("mysoundblocks:block", {
 		local ee = tonumber(meta:get_string("e")) or 10
 		local ff = tonumber(meta:get_string("e")) or 1
 
-		minetest.show_formspec(player:get_player_name(),"fs",
+		core.show_formspec(player:get_player_name(),"fs",
 				"size[6,7;]"..
 				"background[-0.5,-0.5;7,8;mysoundblocks_bg.png]"..
 				"field[1,1;4.5,1;snd;Enter Sound Name;"..aa.."]"..
@@ -71,9 +71,9 @@ minetest.register_node("mysoundblocks:block", {
 				"button_exit[2.25,5.75;1.5,1;entc;Chat]"..
 				"button_exit[3.75,5.75;1.5,1;entb;Both]")
 
-		minetest.register_on_player_receive_fields(function(player, formname, fields)
+		core.register_on_player_receive_fields(function(player, formname, fields)
 
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			local inv = meta:get_inventory()
 			local thing1 = fields["snd"]
 			local thing2 = fields["sndl"]
@@ -102,7 +102,7 @@ minetest.register_node("mysoundblocks:block", {
 					meta:set_string("g", thing7)
 					meta:set_string("h", thing8)
 
-					minetest.swap_node(pos, {name = "mysoundblocks:block_hidden"})
+					core.swap_node(pos, {name = "mysoundblocks:block_hidden"})
 
 					return true
 
@@ -115,7 +115,7 @@ minetest.register_node("mysoundblocks:block", {
 					meta:set_string("d", thing4)
 					meta:set_string("e", "chat")
 
-					minetest.swap_node(pos, {name = "mysoundblocks:block_hidden"})
+					core.swap_node(pos, {name = "mysoundblocks:block_hidden"})
 
 					return true
 
@@ -132,7 +132,7 @@ minetest.register_node("mysoundblocks:block", {
 					meta:set_string("g", thing7)
 					meta:set_string("h", thing8)
 
-					minetest.swap_node(pos, {name = "mysoundblocks:block_hidden"})
+					core.swap_node(pos, {name = "mysoundblocks:block_hidden"})
 
 					return true
 				end
@@ -146,25 +146,25 @@ end
 
 })
 
-minetest.register_node("mysoundblocks:block_hidden", {
+core.register_node("mysoundblocks:block_hidden", {
 	tiles = {"mysoundblocks_hidden.png"},
-	drawtype = "nodebox",
+	drawtype = "airlike",
 	paramtype = "light",
 	walkable = false,
 	pointable = false,
 	group = {not_in_creative_inventory = 1},
 })
 
-minetest.register_privilege("mysoundblocks", "Lets you place and dig soundblocks")
+core.register_privilege("mysoundblocks", "Lets you place and dig soundblocks")
 
-minetest.register_chatcommand("showsb", {
+core.register_chatcommand("showsb", {
 	params = "",
 	description = "Show the sound block",
 	privs={mysoundblocks = true},
 
 	func = function(name, param)
 
-		local player = minetest.get_player_by_name(name)
+		local player = core.get_player_by_name(name)
 
 		if not player then
 			return false, "Player not found"
@@ -172,26 +172,26 @@ minetest.register_chatcommand("showsb", {
 
 		local pos = player:getpos()
 
-		local a = minetest.find_nodes_in_area(
+		local a = core.find_nodes_in_area(
 			{x = pos.x - 5, y = pos.y - 5, z = pos.z - 5},
 			{x = pos.x + 5, y = pos.y + 5, z = pos.z + 5},
 			{"mysoundblocks:block_hidden"})
 
 			for _, row in pairs(a) do
-				minetest.swap_node(row, {name = "mysoundblocks:block"})
+				core.swap_node(row, {name = "mysoundblocks:block"})
 			end
 
 	end
 })
 
-minetest.register_chatcommand("hidesb", {
+core.register_chatcommand("hidesb", {
 	params = "",
 	description = "Hide the sound block",
 	privs = {mysoundblocks = true},
 
 	func = function(name, param)
 
-		local player = minetest.get_player_by_name(name)
+		local player = core.get_player_by_name(name)
 
 		if not player then
 			return false, "Player not found"
@@ -200,19 +200,19 @@ minetest.register_chatcommand("hidesb", {
 		local pos = player:getpos()
 			pos.y = pos.y + 1
 
-		local a = minetest.find_nodes_in_area(
+		local a = core.find_nodes_in_area(
 			{x = pos.x - 5, y = pos.y - 5, z = pos.z - 5},
 			{x = pos.x + 5, y = pos.y + 5, z = pos.z + 5},
 			{"mysoundblocks:block"})
 
 			for _, row in pairs(a) do
-				minetest.swap_node(row, {name = "mysoundblocks:block_hidden"})
+				core.swap_node(row, {name = "mysoundblocks:block_hidden"})
 			end
 
 	end
 })
 
-minetest.register_abm({
+core.register_abm({
 	nodenames = {"mysoundblocks:block_hidden"},
 	interval = 0.2,
 	chance = 1,
@@ -220,7 +220,7 @@ minetest.register_abm({
 
 	action = function(pos, node)
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 
 		local block_sound = meta:get_string("a")
 		local block_time = tonumber(meta:get_string("b"))
@@ -236,7 +236,7 @@ minetest.register_abm({
 
 		rad_dist = rad_dist or 3
 
-		local all_objects = minetest.get_objects_inside_radius(pos, rad_dist)
+		local all_objects = core.get_objects_inside_radius(pos, rad_dist)
 		local p
 		local glob = nil
 
@@ -255,7 +255,7 @@ minetest.register_abm({
 if sound_pa == "All"
 and glob == nil then
 
-	minetest.sound_play(block_sound, {
+	core.sound_play(block_sound, {
 		gain = sound_gain,
 	})
 
@@ -268,7 +268,7 @@ if (sound_chat == "chat" or sound_chat == "both")
 and block_text 
 and block_text ~= chats[p] then
 
-	minetest.chat_send_player(p, block_text)
+	core.chat_send_player(p, block_text)
 	chats[p] = block_text
 end
 
@@ -278,13 +278,13 @@ and block_sound then
 
 	-- stop any sounds still playing
 	if handler[p] and block_sound ~= sound[p] then
-		minetest.sound_stop(handler[p])
-		if player_name[p] then minetest.chat_send_all(player_name[p].." and "..block_sound) end
+		core.sound_stop(handler[p])
+		if player_name[p] then core.chat_send_all(player_name[p].." and "..block_sound) end
 	end
 
 	-- only player hears this sound
 	if handler[p] and block_sound == sound[p] then return end
-	handler[p] = minetest.sound_play(block_sound, {
+	handler[p] = core.sound_play(block_sound, {
 		max_hear_distance = sound_dis,
 		to_player = p,
 		gain = sound_gain,
@@ -293,7 +293,7 @@ and block_sound then
 
 end
 
-					minetest.after(block_time, function(p)
+					core.after(block_time, function(p)
 						player_name[p] = nil
 					end, p)
 

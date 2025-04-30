@@ -38,7 +38,9 @@ Chat Commands
 /hidesb - hides the soundblock
 
 
-Licence - DWYWPL
+Code Licence - MIT
 
-Mod by Tenplus1 and Don
+Media Licence - CC0
+
+
 
